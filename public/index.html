@@ -8,20 +8,22 @@
 </head>
 <body>
     <p>Welcome to the Chat app</p>
+    <label for="from">From: </label>
+    <input id="from" type="text" placeholder="someone. Maybe you">
+    <br>
+    <label for="text_body">Message</label>
+    <br>
+    <textarea name="" id="message" cols="30" rows="10"></textarea>
+    <br>
+    <button type="button">Send</button>
+    <br>
+
+    <p>List of messages</p>
+    <ul id="list"></ul>
+
 </body>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
-    var socket = io();
-
-    socket.on('connect', () => {
-        console.log('Connected to server');
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Disconnected from server');
-    });
-
-</script>
+<script src="/js/index.js"></script>
 
 </html>

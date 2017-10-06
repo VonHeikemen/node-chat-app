@@ -17,9 +17,22 @@ function sendMessage (e){
 function renderMessage(response) {
     var list = document.getElementById('messages');
     var newItem = document.createElement('li');
-    newItem.innerText = response.from + ': ' + response.text;
+    var time = messageTimestamp(response.createdAt);
+
+    newItem.innerText = response.from + ' ' + time + ': ' + response.text;
 
     list.appendChild(newItem);
+}
+
+function messageTimestamp(date) {
+    var options = {
+        hour: 'numeric', minute: 'numeric',
+        hour12: true
+      };
+      
+      return new Intl.DateTimeFormat(['en-US'], options)
+        .format(date)
+        .toLocaleLowerCase();
 }
 
 function sendLocation(e) {
@@ -65,8 +78,10 @@ socket.on('newLocationUrl', function(response) {
     anchor.target = '_blank';
     anchor.innerText = 'My current location';
 
+    var time = messageTimestamp(response.createdAt);
+
     var newItem = document.createElement('li');
-    newItem.innerText = response.from + ': ';
+    newItem.innerText = response.from + ' ' + time + ': ';
     newItem.appendChild(anchor);
 
     var list = document.getElementById('messages');

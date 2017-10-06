@@ -5,11 +5,16 @@
   "scripts": {
     "start": "node server/server.js",
     "watch": "nodemon --exec \"npm start\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha server/**/*.test.js",
+    "test-watch": "nodemon --exec \"npm test\""
   },
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.1",
     "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3"
   }
 }

@@ -2,7 +2,10 @@ const messageUtils = require('./message');
 const chai = require('chai');
 
 const expect = chai.expect;
-const { generateMessage } = messageUtils;
+const { 
+    generateMessage,
+    shareUserLocation
+} = messageUtils;
 
 describe('Message Utils', () => {
 
@@ -14,9 +17,21 @@ describe('Message Utils', () => {
 
         expect(message.from).to.equal(from);
         expect(message.text).to.equal(text);
-        expect(message.createdAt).to.be.a('number')
+        expect(message.createdAt).to.be.a('number');
+    });
 
-        ;
+    it('should return correct url with coordenates', () => {
+        const coords = {
+            latitude: 1,
+            longitude: 1
+        };
+
+        const expectedURL = `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`;
+        
+        const message = shareUserLocation(coords);
+
+        expect(message.opts.anchor).to.be.true;
+        expect(message.opts.href).to.equal(expectedURL);
     });
 
 });

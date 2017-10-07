@@ -25,7 +25,9 @@ io.on('connect', socket => {
     socket.emit('welcome', userJoined('greeting'));
 
     socket.on('createMessage', (data, callback) => {
-        io.emit('newMessage', generateMessage(data));
+        const {text} = data;
+
+        io.emit('newMessage', generateMessage({text}));
         callback('Message send succesfully');
     });
 

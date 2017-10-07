@@ -15,13 +15,17 @@ function sendMessage (e){
 }
 
 function renderMessage(response) {
-    var list = document.getElementById('messages');
-    var newItem = document.createElement('li');
-    var time = messageTimestamp(response.createdAt);
+    var messageData = {
+        from: response.from,
+        text: response.text,
+        createdAt: messageTimestamp(response.createdAt),
+        opts: response.opts
+    };
 
-    newItem.innerText = response.from + ' ' + time + ': ' + response.text;
+    var template = document.getElementById('message-template').innerHTML;
+    var message = Mustache.render(template, messageData);
 
-    list.appendChild(newItem);
+    document.getElementById('messages').innerHTML += message;
 }
 
 function messageTimestamp(date) {
@@ -72,21 +76,7 @@ socket.on('connect', function() {
 
 socket.on('newMessage', renderMessage);
 socket.on('welcome', renderMessage);
-socket.on('newLocationUrl', function(response) {
-    var anchor = document.createElement('a');
-    anchor.href = response.text;
-    anchor.target = '_blank';
-    anchor.innerText = 'My current location';
-
-    var time = messageTimestamp(response.createdAt);
-
-    var newItem = document.createElement('li');
-    newItem.innerText = response.from + ' ' + time + ': ';
-    newItem.appendChild(anchor);
-
-    var list = document.getElementById('messages');
-    list.appendChild(newItem);
-});
+socket.on('newLocationUrl', renderMessage);
 
 socket.on('disconnect', function() {
     console.log('Disconnected from server');

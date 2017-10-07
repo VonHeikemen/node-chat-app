@@ -1,8 +1,9 @@
-const generateMessage = ({from = 'User', text}) => {
+const generateMessage = ({from = 'User', text, opts={plain: true}}) => {
     return  {
         from,
         text,
-        createdAt: new Date().getTime()
+        createdAt: new Date().getTime(),
+        opts
     };
 };
 
@@ -17,9 +18,13 @@ const userJoined = (typeMessage) => {
 };
 
 const shareUserLocation = ({latitude, longitude}) => {
-    const text = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    const text = 'My current location';
+    const opts = {
+        anchor: true,
+        href: `https://www.google.com/maps?q=${latitude},${longitude}`
+    };
 
-    return generateMessage({text});
+    return generateMessage({text, opts});
 };
 
 module.exports = {

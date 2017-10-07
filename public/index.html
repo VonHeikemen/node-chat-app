@@ -31,6 +31,27 @@
 
 </body>
 
+<script id="message-template" type="x-tmpl-mustache">
+    <li class="message">
+        <div class="message__title">
+            <h4>{{from}}</h4>
+            <span>{{createdAt}}</span>
+        </div>
+        <div class="message__body">
+            <p>
+                {{#opts.plain}}
+                    {{ text }}
+                {{/opts.plain}}
+
+                {{#opts.anchor}}
+                    <a href="{{opts.href}}" target="_blank">{{text}}</a>
+                {{/opts.anchor}}
+            </p>
+        </div>
+    </li>
+</script>
+
+<script src="/js/vendors/mustache.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
 

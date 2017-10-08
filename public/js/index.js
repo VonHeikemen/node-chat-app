@@ -25,7 +25,10 @@ function renderMessage(response) {
     var template = document.getElementById('message-template').innerHTML;
     var message = Mustache.render(template, messageData);
 
-    document.getElementById('messages').innerHTML += message;
+    var list = document.getElementById('messages');
+    list.innerHTML += message;
+
+    scrollToBottom(list);
 }
 
 function messageTimestamp(date) {
@@ -65,6 +68,26 @@ function sendLocation(e) {
             alert('Unable to fetch location');
         }
     );
+}
+
+function scrollToBottom(list) {
+    var listTotalHeight = list.scrollHeight;
+    var listVisiblePortion = list.clientHeight;
+
+    if(listTotalHeight <= listVisiblePortion)
+        return;
+
+    var addedItem = list.lastElementChild;
+    var lastItem = addedItem.previousElementSibling;
+
+    var pixelsFromTop = list.scrollTop;
+    var addedItemHeight = addedItem.clientHeight;
+    var lastItemHeight = lastItem.clientHeight;
+
+    var total =  listVisiblePortion + pixelsFromTop + addedItemHeight + lastItemHeight;
+
+    if( total >= listTotalHeight )
+        list.scrollTop = listTotalHeight;
 }
 
 document.getElementById('message-form').addEventListener('submit', sendMessage);

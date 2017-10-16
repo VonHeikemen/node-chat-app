@@ -1,3 +1,22 @@
+vex.defaultOptions.className = 'vex-theme-default';
+
+vex.dialog.open({
+    unsafeMessage: '<p style="text-align: center;">Join chat room</p>',
+    input: [
+        '<label>Display name</label>',
+        '<input type="text" name="name" autofocus/>',
+        '<label>Room name</label>',
+        '<input type="text" name="room"/>'
+    ].join(''),
+    buttons: [
+        Object.assign({}, vex.dialog.buttons.YES, { text: 'Join' }),
+        Object.assign({}, vex.dialog.buttons.NO, { text: 'Close' })
+    ],
+    callback: function(data) {
+        socket.emit('join', data, console.log);
+    }
+})
+
 var socket = io();
 
 function sendMessage (e){
@@ -35,9 +54,9 @@ function messageTimestamp(date) {
     var options = {
         hour: 'numeric', minute: 'numeric',
         hour12: true
-      };
+    };
       
-      return new Intl.DateTimeFormat(['en-US'], options)
+    return new Intl.DateTimeFormat(['en-US'], options)
         .format(date)
         .toLocaleLowerCase();
 }

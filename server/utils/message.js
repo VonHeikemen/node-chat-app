@@ -7,24 +7,24 @@ const generateMessage = ({from = 'User', text, opts={plain: true}}) => {
     };
 };
 
-const userJoined = (typeMessage) => {
+const userJoined = (typeMessage, userInfo) => {
     const from = 'Admin';
     const text = {
-        greeting: 'Welcome!',
-        notice: 'A new user has joined'
+        greeting: `Welcome, ${userInfo.name}!`,
+        notice: `${userInfo.name} has joined`
     };
 
     return generateMessage({from, text: text[typeMessage]});
 };
 
-const shareUserLocation = ({latitude, longitude}) => {
+const shareUserLocation = ({from, latitude, longitude}) => {
     const text = 'My current location';
     const opts = {
         anchor: true,
         href: `https://www.google.com/maps?q=${latitude},${longitude}`
     };
 
-    return generateMessage({text, opts});
+    return generateMessage({from, text, opts});
 };
 
 module.exports = {

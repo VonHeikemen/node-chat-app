@@ -7,11 +7,11 @@ const generateMessage = ({from = 'User', text, opts={plain: true}}) => {
     };
 };
 
-const userJoined = (typeMessage, userInfo) => {
+const userJoined = (typeMessage, username) => {
     const from = 'Admin';
     const text = {
-        greeting: `Welcome, ${userInfo.name}!`,
-        notice: `${userInfo.name} has joined`
+        greeting: `Welcome, ${username}!`,
+        notice: `${username} has joined`
     };
 
     return generateMessage({from, text: text[typeMessage]});

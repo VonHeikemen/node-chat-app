@@ -30,8 +30,11 @@ describe('Message Utils', () => {
         
         const message = shareUserLocation(coords);
 
-        expect(message.opts.anchor).to.be.true;
-        expect(message.opts.href).to.equal(expectedURL);
+        expect(message.opts)
+            .to.eql({ 
+                anchor: true, 
+                href: expectedURL
+            });
     });
 
 });

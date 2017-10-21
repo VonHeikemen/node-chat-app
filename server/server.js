@@ -9,10 +9,17 @@ const {
     userJoined,
     shareUserLocation
 } = require('./utils/message');
+const {
+    addUser,
+    removeUser,
+    getUser,
+    getUserList
+} = require('./utils/users.js');
 
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
+let users = [];
 
 const port = process.env.PORT || 3000; 
 
@@ -24,33 +31,39 @@ io.on('connect', socket => {
     console.log('A new user connected');
 
     socket.on('join', data => {
-        socket.join(data.room);
+        const user = {
+            id: socket.id,
+            room: data.room,
+            name: data.name
+        };
 
-        //Don't do this in production, please
-        //it's just wrong
-        socket.username = data.name;
-        socket.room = data.room;
+        users = addUser(users, user);
+
+        //Join the room
+        socket.join(user.room);
 
         //emit to all users except the sender
-        socket.to(socket.room).emit('newMessage', userJoined('notice', data));
+        socket.to(user.room).emit('newMessage', userJoined('notice', user.name));
 
         //emit only to the user
-        socket.emit('welcome', userJoined('greeting', data));
+        socket.emit('welcome', userJoined('greeting', user.name));
     });
 
     socket.on('createMessage', (data, callback) => {
+        const user = getUser(users, socket.id);
         const message = {
-            from: socket.username,
+            from: user.name,
             text: data.text
         }
 
-        io.in(socket.room).emit('newMessage', generateMessage(message));
+        io.in(user.room).emit('newMessage', generateMessage(message));
         callback('Message send succesfully');
     });
 
     socket.on('shareLocation', (data) => {
-        data.from = socket.username;
-        io.in(socket.room).emit('newLocationUrl', shareUserLocation(data));
+        const user = getUser(users, socket.id);
+        data.from = user.name;
+        io.in(user.room).emit('newLocationUrl', shareUserLocation(data));
     });
 
     socket.on('disconnect', () => {

@@ -101,7 +101,7 @@
       color: #777;
       background: #e0e0e0; }
   .vex.vex-theme-default .vex-dialog-form .vex-dialog-message {
-    margin-bottom: .5em; }
+    margin-bottom: .5em; text-align: center; }
   .vex.vex-theme-default .vex-dialog-form .vex-dialog-input {
     margin-bottom: 1em; }
     .vex.vex-theme-default .vex-dialog-form .vex-dialog-input select, .vex.vex-theme-default .vex-dialog-form .vex-dialog-input textarea, .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="date"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="datetime"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="datetime-local"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="email"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="month"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="number"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="password"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="search"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="tel"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="text"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="time"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="url"], .vex.vex-theme-default .vex-dialog-form .vex-dialog-input input[type="week"] {

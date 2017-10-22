@@ -1,23 +1,64 @@
-vex.defaultOptions.className = 'vex-theme-default';
-
-vex.dialog.open({
-    unsafeMessage: '<p style="text-align: center;">Join chat room</p>',
-    input: [
-        '<label>Display name</label>',
-        '<input type="text" name="name" autofocus/>',
-        '<label>Room name</label>',
-        '<input type="text" name="room"/>'
-    ].join(''),
-    buttons: [
-        Object.assign({}, vex.dialog.buttons.YES, { text: 'Join' }),
-        Object.assign({}, vex.dialog.buttons.NO, { text: 'Close' })
-    ],
-    callback: function(data) {
-        socket.emit('join', data, console.log);
-    }
-})
 
 var socket = io();
+vex.defaultOptions.className = 'vex-theme-default';
+
+function joinRoom() {
+    vex.dialog.open({
+        message: 'Join chat room',
+        input: [
+            '<label>Display name</label>',
+            '<input type="text" name="name" autofocus/>',
+            '<label>Room name</label>',
+            '<input type="text" name="room"/>'
+        ].join(''),
+        buttons: [
+            Object.assign({}, vex.dialog.buttons.YES, { text: 'Join' }),
+        ],
+        callback: function(data) {
+            if( !data ){
+                return appMessage('You must join a room', joinRoom);
+            }
+
+            socket.emit('join', data, roomResponse);
+        }
+    });
+}
+
+function welcome() {
+    var btnProps = {
+        text: 'Join a chat room',
+        className: 'vex-center-button'
+    };
+
+    vex.dialog.open({
+        message: 'Welcome!',
+        buttons: [
+            Object.assign({}, vex.dialog.buttons.YES, btnProps),
+        ],
+        callback: joinRoom
+    });
+}
+
+function appMessage(message, callback) {
+    var opts = {
+        message: message,
+        buttons: [vex.dialog.buttons.YES]
+    };
+
+    if(callback){
+        opts.callback = callback;
+    }
+
+    vex.dialog.open(opts);
+}
+
+function roomResponse(data) {
+    if( data.error )
+        return appMessage(data.error, joinRoom);
+
+    document.getElementById('msg-body').focus();
+    console.log(data.success);
+}
 
 function sendMessage (e){
     e.preventDefault();
@@ -28,8 +69,12 @@ function sendMessage (e){
     };
 
     socket.emit('createMessage', message, function (resp) {
+        if(resp.noUser)
+            return appMessage(resp.error, joinRoom);
+        
         console.log(resp);
         text.value = '';
+        document.getElementById('msg-body').focus();
     });
 }
 
@@ -63,7 +108,7 @@ function messageTimestamp(date) {
 
 function sendLocation(e) {
     if(!navigator.geolocation)
-        return alert('Browser not supported');
+        return appMessage('Browser not supported');
 
     var btnShareLocation = this;
 
@@ -77,14 +122,20 @@ function sendLocation(e) {
                 longitude: position.coords.longitude
             };
 
-            socket.emit('shareLocation', coords);
+            socket.emit('shareLocation', coords, function(resp) {
+                if(resp.noUser)
+                    return appMessage(resp.error, joinRoom);
+                
+                document.getElementById('msg-body').focus();
+            });
+
             btnShareLocation.innerText = 'Send Location';
             btnShareLocation.removeAttribute('disabled');
         },
         function () {
             btnShareLocation.innerText = 'Send Location';
             btnShareLocation.removeAttribute('disabled');
-            alert('Unable to fetch location');
+            appMessage('Unable to fetch location');
         }
     );
 }
@@ -109,8 +160,24 @@ function scrollToBottom(list) {
         list.scrollTop = listTotalHeight;
 }
 
+function updateUserList(users) {
+    var list = document.createElement('ol');
+
+    users.forEach(function(user) {
+        var li = document.createElement('li');
+        li.innerText = user;
+        list.appendChild(li);
+    });
+
+    var userList = document.getElementById('users');
+    userList.innerHTML = '';
+    userList.appendChild(list);
+}
+
 document.getElementById('message-form').addEventListener('submit', sendMessage);
 document.getElementById('send-location').addEventListener('click', sendLocation);
+
+welcome();
 
 socket.on('connect', function() {
     console.log('Connected to server');
@@ -118,6 +185,7 @@ socket.on('connect', function() {
 
 socket.on('newMessage', renderMessage);
 socket.on('welcome', renderMessage);
+socket.on('updateUserList', updateUserList);
 socket.on('newLocationUrl', renderMessage);
 
 socket.on('disconnect', function() {

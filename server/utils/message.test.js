@@ -4,7 +4,8 @@ const chai = require('chai');
 const expect = chai.expect;
 const { 
     generateMessage,
-    shareUserLocation
+    shareUserLocation,
+    validateString
 } = messageUtils;
 
 describe('Message Utils', () => {
@@ -34,7 +35,14 @@ describe('Message Utils', () => {
             .to.eql({ 
                 anchor: true, 
                 href: expectedURL
-            });
+            })
+        ;
+    });
+
+    it('should return false on empty string', () => {
+        expect('').to.not.satisfy(validateString);
+        expect('  ').to.not.satisfy(validateString);
+        expect('  d').to.satisfy(validateString);
     });
 
 });

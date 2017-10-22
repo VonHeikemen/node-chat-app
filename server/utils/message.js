@@ -1,4 +1,10 @@
-const generateMessage = ({from = 'User', text, opts={plain: true}}) => {
+const adminMessage = {
+    greeting: 'Welcome, ${username}',
+    joined: '${username} has joined',
+    leave: '${username} has left'
+};
+
+const generateMessage = ({from, text, opts={plain: true}}) => {
     return  {
         from,
         text,
@@ -7,14 +13,11 @@ const generateMessage = ({from = 'User', text, opts={plain: true}}) => {
     };
 };
 
-const userJoined = (typeMessage, username) => {
+const sendAdminMessage = (typeMessage, username) => {
     const from = 'Admin';
-    const text = {
-        greeting: `Welcome, ${username}!`,
-        notice: `${username} has joined`
-    };
+    const text = adminMessage[typeMessage].replace('${username}', username);
 
-    return generateMessage({from, text: text[typeMessage]});
+    return generateMessage({from, text});
 };
 
 const shareUserLocation = ({from, latitude, longitude}) => {
@@ -27,8 +30,17 @@ const shareUserLocation = ({from, latitude, longitude}) => {
     return generateMessage({from, text, opts});
 };
 
+const validateString = (text) => {
+    return ( 
+        typeof text === 'string'
+        && text.trim() !== ''
+    );
+};
+
+
 module.exports = {
     generateMessage,
-    userJoined,
-    shareUserLocation
+    sendAdminMessage,
+    shareUserLocation,
+    validateString
 };
